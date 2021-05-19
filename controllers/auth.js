@@ -1,12 +1,14 @@
 const Usuario = require("../models/Usuario")
-const Personaje = require('../models/Personaje');
 const { response, request } = require("express");
 const bcrypt = require('bcrypt');
+const { generarJWT } = require("../helpers/generar-JWT");
+
 
 
 
 //Generar Usuario
 const crearUsuario = async (req = request, res = response) => {
+
     const { email, password } = req.body
     const usuario = new Usuario({ email, password });
 
@@ -14,7 +16,7 @@ const crearUsuario = async (req = request, res = response) => {
     const existeEmail = await Usuario.findOne({ where: { email } });
     if (existeEmail) {
         return res.status(400).json({
-            msg: "ya existe un usuario con ese email"
+            msg: "Ya existe un usuario con ese email"
         })
     }
 
@@ -22,23 +24,59 @@ const crearUsuario = async (req = request, res = response) => {
 
     const salt = bcrypt.genSaltSync();
     usuario.password = bcrypt.hashSync(password, salt);
-    
+
     //guardar en db
     await usuario.save();
-    res.json(usuario)
+    res.status(200).json(usuario)
 
 
 }
 
 
+//login
 
-const asd = async (req, res) => {
-    const personaje = await Personaje.findAll();
+const login = async (req, res) => {
 
-    res.json({
-        "ok": "asd",
-        personaje
-    })
+    const { email, password } = req.body;
+
+
+    try {
+
+        //verificar si el email existe
+        const usuario = await Usuario.findOne({ where: { email } });
+
+        if (!usuario) {
+            return res.status(400).json({
+                msg: 'Email / Password no son correctos'
+            })
+        }
+
+        //verificar la contraseña
+        const validPassword = bcrypt.compareSync(password, usuario.password);
+        if (!validPassword) {
+            return res.status(400).json({
+                msg: 'Email / Password no son correctos'
+            })
+        }
+
+        //generar el jwt
+        const token = await generarJWT(usuario.id);
+
+        res.status(200).json({
+            msg: "login ok",
+            token,
+            usuario
+        })
+
+
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Hable con el administrador"
+        })
+    }
+
 }
 
 
@@ -49,6 +87,7 @@ const asd = async (req, res) => {
 
 
 module.exports = {
-    crearUsuario
+    crearUsuario,
+    login
 
 }

@@ -7,7 +7,7 @@ const Personaje = db.define('personajes', {
         type: Sequilize.DataTypes.STRING
     },
     edad: {
-        type: Sequilize.DataTypes.STRING
+        type: Sequilize.DataTypes.INTEGER
     },
     peso: {
         type: Sequilize.DataTypes.STRING
@@ -19,7 +19,7 @@ const Personaje = db.define('personajes', {
         type: Sequilize.DataTypes.STRING
     },
     imagen: {
-        type: Sequilize.DataTypes.STRING
+        type: Sequilize.DataTypes.BLOB
     },
 })
 

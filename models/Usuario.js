@@ -9,8 +9,6 @@ const Usuario = db.define('usuarios', {
     password: {
         type: Sequilize.DataTypes.STRING
     }
-}, {
-    timestamps: false
 })
 
 

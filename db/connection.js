@@ -1,10 +1,8 @@
 const Sequilize = require('sequelize');
 
 const db = new Sequilize('challenge node', 'root', '', {
-    host: 'localhost',
+    host: process.env.DB_HOST,
     dialect: 'mysql'
-}, {
-    timestamps: false
 }
 );
 
