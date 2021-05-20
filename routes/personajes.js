@@ -1,14 +1,18 @@
 const { Router } = require('express');
-const { crearPersonaje, actualizarPersonaje } = require('../controllers/personajes');
+const { crearPersonaje, actualizarPersonaje, eliminarPersonaje } = require('../controllers/personajes');
 
 const router = Router();
 
+// obtener listado de personajes
+router.get('/', ); 
 
-// router.get('/characters', ); // obtener listado de personajes
+//crear personaje
+router.post('/', crearPersonaje);
 
-router.post('/crearpj', crearPersonaje);
+//actualizar personaje
+router.put('/:id', actualizarPersonaje)
 
-router.put('/actualizarpj/:id', actualizarPersonaje)
-
+//eliminarpersonaje
+router.delete('/:id', eliminarPersonaje)
 
 module.exports= router;

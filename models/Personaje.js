@@ -19,7 +19,7 @@ const Personaje = db.define('personajes', {
         type: Sequilize.DataTypes.STRING
     },
     imagen: {
-        type: Sequilize.DataTypes.BLOB
+        type: Sequilize.DataTypes.BLOB("long")
     },
 })
 
