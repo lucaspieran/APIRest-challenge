@@ -1,8 +1,56 @@
 const { response, request } = require('express');
 const Personaje = require('../models/Personaje');
+const fs = require('fs')
 
+
+//obtener personajes
+
+const obtenerPesonajes = async (req = request, res = response) => {
+
+    const personajes = await Personaje.findAll({ attributes: ['nombre', 'imagen'] });
+
+    res.status(200).json(personajes)
+}
+
+//detalle de personaje
+
+const detallePersonaje = async (req = request, res = response) => {
+    const { id } = req.params;
+
+    const detallePj = await Personaje.findByPk(id)
+
+    res.json(detallePj)
+
+
+}
 
 const crearPersonaje = async (req = request, res = response) => {
+
+    // try {
+
+    //     console.log(req.file)
+    //     if (req.file == undefined) {
+    //         return res.send(`debes seleccionar un archivo`);
+    //     }
+
+    //     Personaje.create({
+    //         // type: req.file.mimetype,
+    //         // imagen: req.file.originalname,
+    //         imagen: fs.readFileSync(
+    //             __basedir + "/public/images" + req.file.filename
+    //         ),
+    //     }).then((image) => {
+    //         fs.writeFileSync(
+    //             __basedir + "/public/tmp" + image.name,
+    //             image.imagen
+    //         )
+
+    //         return res.send("file upload")
+    //     })
+
+    // } catch (error) {
+    //     console.log(error)
+    // }
 
     const { nombre, ...body } = req.body;
 
@@ -25,6 +73,8 @@ const crearPersonaje = async (req = request, res = response) => {
     res.status(200).json(personaje)
 
 }
+
+//actualizar personaje
 
 const actualizarPersonaje = async (req = request, res = response) => {
     const { id } = req.params;
@@ -52,6 +102,8 @@ const actualizarPersonaje = async (req = request, res = response) => {
 
 }
 
+//eliminar personaje
+
 const eliminarPersonaje = async (req = request, res = response) => {
     const { id } = req.params;
 
@@ -74,5 +126,8 @@ const eliminarPersonaje = async (req = request, res = response) => {
 module.exports = {
     crearPersonaje,
     actualizarPersonaje,
-    eliminarPersonaje
+    eliminarPersonaje,
+    obtenerPesonajes,
+    detallePersonaje
+
 }

@@ -1,26 +1,19 @@
 const Sequilize = require('sequelize')
 const db = require('../db/connection')
 
-
-const Personaje = db.define('personajes', {
-    nombre: {
+const Pelicula = db.define('peliculas', {
+    titulo: {
         type: Sequilize.DataTypes.STRING
     },
-    edad: {
+    fecha: {
         type: Sequilize.DataTypes.INTEGER
     },
-    peso: {
-        type: Sequilize.DataTypes.STRING
-    },
-    historia: {
-        type: Sequilize.DataTypes.STRING
-    },
-    peliculas_asociadas: {
+    calificacion: {
         type: Sequilize.DataTypes.STRING
     },
     imagen: {
         type: Sequilize.DataTypes.BLOB("medium")
-    },
-})
+    }
+});
 
-module.exports = Personaje;
+module.exports = Pelicula;

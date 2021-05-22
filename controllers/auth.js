@@ -2,6 +2,9 @@ const Usuario = require("../models/Usuario")
 const { response, request } = require("express");
 const bcrypt = require('bcrypt');
 const { generarJWT } = require("../helpers/generar-JWT");
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.API_KEY);
 
 
 
@@ -27,9 +30,20 @@ const crearUsuario = async (req = request, res = response) => {
 
     //guardar en db
     await usuario.save();
+
+    //enviar el
+    const message = {
+        to: email,
+        from: 'lucaspierandrei19@gmail.com',
+        subject: 'Bienvenido',
+        text: 'Bienvenido a mi api rest',
+        html: '<h1>Hola</h1>'
+    }
+    sgMail.send(message)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+
     res.status(200).json(usuario)
-
-
 }
 
 
