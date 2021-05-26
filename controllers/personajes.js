@@ -25,33 +25,7 @@ const detallePersonaje = async (req = request, res = response) => {
 }
 
 const crearPersonaje = async (req = request, res = response) => {
-
-    // try {
-
-    //     console.log(req.file)
-    //     if (req.file == undefined) {
-    //         return res.send(`debes seleccionar un archivo`);
-    //     }
-
-    //     Personaje.create({
-    //         // type: req.file.mimetype,
-    //         // imagen: req.file.originalname,
-    //         imagen: fs.readFileSync(
-    //             __basedir + "/public/images" + req.file.filename
-    //         ),
-    //     }).then((image) => {
-    //         fs.writeFileSync(
-    //             __basedir + "/public/tmp" + image.name,
-    //             image.imagen
-    //         )
-
-    //         return res.send("file upload")
-    //     })
-
-    // } catch (error) {
-    //     console.log(error)
-    // }
-
+    
     const { nombre, ...body } = req.body;
 
     const nombreDB = await Personaje.findOne({ where: { nombre } })
@@ -71,6 +45,33 @@ const crearPersonaje = async (req = request, res = response) => {
     //guardar en db
     await personaje.save();
     res.status(200).json(personaje)
+
+    // try {
+
+    //     console.log(req.file)
+    //     if (req.file == undefined) {
+    //         return res.send(`debes seleccionar un archivo`);
+    //     }
+
+    //     Personaje.create({
+    //         type: req.file.mimetype,
+    //         imagen: req.file.originalname,
+    //         imagen: fs.readFileSync(
+    //             __basedir + "/public/images" + req.file.filename
+    //         ),
+    //     }).then((image) => {
+    //         fs.writeFileSync(
+    //             __basedir + "/public/tmp" + image.name,
+    //             image.imagen
+    //         )
+
+    //         return res.send("file upload")
+    //     })
+
+    // } catch (error) {
+    //     console.log(error)
+    // }
+
 
 }
 
@@ -117,7 +118,7 @@ const eliminarPersonaje = async (req = request, res = response) => {
     }
     await personaje.destroy();
 
-    res.json(personaje);
+    res.json({msg: "Eliminado"});
 
     //Eliminacion logica: se agregaria una fila de estado a la tabla para cambiarla de true a false y asi no eliminarlo por completo
 

@@ -2,8 +2,6 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { crearUsuario, login } = require('../controllers/auth');
 const { validarCampos } = require('../middlewares/validar-campos');
-var multer = require('multer')
-var multParse = multer()
 
 const router = Router();
 
