@@ -5,11 +5,11 @@ const Pelicula = require("../models/Pelicula");
 const buscarPelicula = async (req = request, res = response) => {
 
 
-    const { name = '', age = '', movie = '' } = req.query;
+    const { name = ''} = req.query;
 
     const pelicula = await Pelicula.findAll({
         where: {
-            titulo: { [Op.like]: '%' + name + '%' }
+            nombre: { [Op.like]: '%' + name + '%' },
         }
     })
 

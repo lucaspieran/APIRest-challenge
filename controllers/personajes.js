@@ -25,7 +25,7 @@ const detallePersonaje = async (req = request, res = response) => {
 }
 
 const crearPersonaje = async (req = request, res = response) => {
-    
+
     const { nombre, ...body } = req.body;
 
     const nombreDB = await Personaje.findOne({ where: { nombre } })
@@ -118,7 +118,7 @@ const eliminarPersonaje = async (req = request, res = response) => {
     }
     await personaje.destroy();
 
-    res.json({msg: "Eliminado"});
+    res.json({ msg: "Eliminado" });
 
     //Eliminacion logica: se agregaria una fila de estado a la tabla para cambiarla de true a false y asi no eliminarlo por completo
 
