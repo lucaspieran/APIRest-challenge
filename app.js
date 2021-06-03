@@ -3,7 +3,7 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const multer = require('multer');
 
-const upload = multer({ dest: 'public/images' })
+
 
 const app = express();
 global.__basedir = __dirname;

@@ -21,9 +21,6 @@ const generarJWT = (id = '') => {
             }
         })
     })
-
-
-
 }
 
 

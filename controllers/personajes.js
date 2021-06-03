@@ -1,6 +1,11 @@
 const { response, request } = require('express');
 const Personaje = require('../models/Personaje');
-const fs = require('fs')
+const fs = require('fs');
+const multer = require('multer');
+const shortid = require('shortid');
+
+
+
 
 
 //obtener personajes
@@ -24,11 +29,47 @@ const detallePersonaje = async (req = request, res = response) => {
 
 }
 
+//config multer
+const configuracionMulter = {
+    storage: fileStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, __dirname + '../../uploads/');
+        },
+        filename: (req, file, cb) => {
+            const extension = file.mimetype.split('/')[1];
+            cb(null, `${shortid.generate()}.${extension}`);
+        }
+    }),
+    fileFilter(req, file, cb) {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+            cb(null, true);
+        } else {
+            cb(new Error('Formato No válido'))
+        }
+    },
+}
+
+// pasar la configuración y el campo
+const upload = multer(configuracionMulter).single('imagen');
+
+
+// Sube un archivo 
+const subirArchivo = (req, res, next) => {
+    upload(req, res, function (error) {
+        if (error) {
+            res.json({ mensaje: error })
+        }
+        return next();
+    })
+}
+
 const crearPersonaje = async (req = request, res = response) => {
 
     const { nombre, ...body } = req.body;
 
     const nombreDB = await Personaje.findOne({ where: { nombre } })
+
+    const personaje = new Personaje(req.body);
 
     if (nombreDB) {
         return res.status(400).json({
@@ -36,41 +77,18 @@ const crearPersonaje = async (req = request, res = response) => {
         })
     }
 
-    const data = {
-        nombre,
-        ...body
+    if (req.file) {
+        personaje.imagen = req.file.filename
+    } else {
+        return res.status(400).json({
+            msg: "Debes elegir una imagen"
+        })
     }
-    const personaje = new Personaje(data);
 
     //guardar en db
     await personaje.save();
     res.status(200).json(personaje)
 
-    // try {
-
-    //     console.log(req.file)
-    //     if (req.file == undefined) {
-    //         return res.send(`debes seleccionar un archivo`);
-    //     }
-
-    //     Personaje.create({
-    //         type: req.file.mimetype,
-    //         imagen: req.file.originalname,
-    //         imagen: fs.readFileSync(
-    //             __basedir + "/public/images" + req.file.filename
-    //         ),
-    //     }).then((image) => {
-    //         fs.writeFileSync(
-    //             __basedir + "/public/tmp" + image.name,
-    //             image.imagen
-    //         )
-
-    //         return res.send("file upload")
-    //     })
-
-    // } catch (error) {
-    //     console.log(error)
-    // }
 
 
 }
@@ -79,10 +97,9 @@ const crearPersonaje = async (req = request, res = response) => {
 
 const actualizarPersonaje = async (req = request, res = response) => {
     const { id } = req.params;
-    const { body } = req;
+    const nuevoPersonaje = req.body
 
     try {
-
         const personaje = await Personaje.findByPk(id)
         if (!personaje) {
             return res.status(404).json({
@@ -90,7 +107,14 @@ const actualizarPersonaje = async (req = request, res = response) => {
             })
         }
 
-        await personaje.update(body);
+        //verificar si hay nueva imagen
+        if (req.file) {
+            nuevoPersonaje.imagen = req.file.filename
+        } else {
+            nuevoPersonaje.imagen = personaje.imagen
+        }
+
+        await personaje.update(nuevoPersonaje);
 
 
         res.json(personaje)
@@ -125,10 +149,10 @@ const eliminarPersonaje = async (req = request, res = response) => {
 }
 
 module.exports = {
+    subirArchivo,
     crearPersonaje,
     actualizarPersonaje,
     eliminarPersonaje,
     obtenerPesonajes,
     detallePersonaje
-
 }

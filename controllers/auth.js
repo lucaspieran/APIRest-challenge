@@ -13,7 +13,7 @@ sgMail.setApiKey(process.env.API_KEY);
 const crearUsuario = async (req = request, res = response) => {
 
     const { email, password } = req.body
-    const usuario = new Usuario({ email, password });
+    const usuario = new Usuario(req.body);
 
     //verificar si el correo existe
     const existeEmail = await Usuario.findOne({ where: { email } });

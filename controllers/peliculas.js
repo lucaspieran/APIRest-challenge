@@ -19,17 +19,21 @@ const crearPelicula = async (req = request, res = response) => {
 
     const tituloDb = await Pelicula.findOne({ where: { titulo } })
 
+    const pelicula = new Pelicula(req.body);
+
     if (tituloDb) {
         return res.status(400).json({
             msg: `El nombre ${titulo} ya se encuentra registrado`
         })
     }
 
-    const data = {
-        titulo,
-        ...body
+    if (req.file) {
+        pelicula.imagen = req.file.filename
+    } else {
+        return res.status(400).json({
+            msg: "Debes elegir una imagen"
+        })
     }
-    const pelicula = new Pelicula(data);
 
     //guardar en db
     await pelicula.save();
@@ -39,7 +43,7 @@ const crearPelicula = async (req = request, res = response) => {
 //actualizar pelicula
 const actualizarPelicula = async (req = request, res = response) => {
     const { id } = req.params;
-    const { body } = req;
+    const nuevaPelicula = req.body
 
     try {
 
@@ -50,7 +54,14 @@ const actualizarPelicula = async (req = request, res = response) => {
             })
         }
 
-        await pelicula.update(body);
+        //verificar si hay nueva imagen
+        if (req.file) {
+            nuevaPelicula.imagen = req.file.filename
+        } else {
+            nuevaPelicula.imagen = pelicula.imagen
+        }
+
+        await pelicula.update(nuevaPelicula);
 
 
         res.json(pelicula)
