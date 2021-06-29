@@ -25,8 +25,6 @@ const detallePersonaje = async (req = request, res = response) => {
     const detallePj = await Personaje.findByPk(id)
 
     res.json(detallePj)
-
-
 }
 
 //config multer
@@ -107,7 +105,7 @@ const actualizarPersonaje = async (req = request, res = response) => {
             })
         }
 
-        //verificar si hay nueva imagen
+        //verificar si hay nueva imagenas
         if (req.file) {
             nuevoPersonaje.imagen = req.file.filename
         } else {
